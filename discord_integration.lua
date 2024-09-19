@@ -23,5 +23,9 @@ discord_integration.hello_rust()
 discord_integration.start_discord_sdk(CLIENT_ID)
 
 
+while true do
+    
+end
+
 
 print("[lua discord int] end of execution")
