@@ -19,12 +19,12 @@ else
     error("error could not find so",2)
 end
 
-discord_integration.hello_rust()
 discord_integration.start_discord_sdk(CLIENT_ID)
+discord_integration.hello_rust()
 
 
 while true do
-    
+    print("aaa")
 end
 
 

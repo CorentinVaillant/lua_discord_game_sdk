@@ -56,6 +56,6 @@ fn lua_init(lua: &Lua) -> LuaResult<LuaTable> {
 fn lua_start_discord_sdk(_lua: &Lua, id: LuaInteger) -> LuaResult<LuaInteger> {
     println!("[lib :lua_start_discord_sdk] starting");
     let _ = start_discord_sdk(id);
-
+    println!("----------------------------------------------/!\\---------------------------------------------------------");
     Ok(0)
 }

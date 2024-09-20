@@ -23,7 +23,7 @@ pub fn hello_rust() {
     println!("[rust] hello");
 }
 
-pub fn _now() -> i64 {
+pub fn now() -> i64 {
     let start = SystemTime::now();
     let since_the_epoch = start
         .duration_since(UNIX_EPOCH)
@@ -61,6 +61,18 @@ pub fn start_discord_sdk(client_id: i64) -> Result<()> {
             "[rust lib] api started with {} client id!",
             discord.client_id()
         );
+
+        let mut activity = Activity::empty();
+        discord.update_activity(activity
+            .with_state("In Play Mode")
+            .with_start_time(5)
+            .with_details("Playing the Trumpet!")
+            , |_, result| {
+            if let Err(error) = result {
+                eprintln!("failed to update activity: {}", error);
+            }
+        });
+
         loop {
             match receiver.recv() {
                 Ok(f) => handle_discord_func(&discord, f)
