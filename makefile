@@ -39,8 +39,11 @@ release :
 prebuild:
 	@printf "prebuild!\n"
 	ifeq ($(TARGET),Linux)
-	@cp $(DISCORD_GAME_SDK_PATH)/lib/x86_64/discord_game_sdk.so $(DISCORD_GAME_SDK_PATH)/lib/x86_64/libdiscord_game_sdk.so
-	@export LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(DISCORD_GAME_SDK_PATH)/lib/x86_64
+	$(shell cp $DISCORD_GAME_SDK_PATH/lib/x86_64/{,lib}discord_game_sdk.so)
+	$(shell export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}$DISCORD_GAME_SDK_PATH/lib/x86_64)
+	
+	
+
 	else
 	@echo (error prebuild: Unsupported OS $(TARGET))
 	endif
