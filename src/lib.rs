@@ -69,111 +69,132 @@ fn lua_discord_update_callback(_lua: &Lua, _: ()) -> LuaResult<LuaInteger> {
 fn lua_send_activity<'a>(_lua: &Lua, table: LuaTable) -> LuaResult<LuaInteger> {
     let mut activity = Activity::empty();
 
-    // let a = |s: &String| -> &str { s.as_str() };
+    table_key_string_into_activity("state", &table, Activity::with_state, &mut activity);
+    table_key_string_into_activity("details", &table, Activity::with_details, &mut activity);
 
-
-// table_key_into_activity("state", &table, Activity::with_state,String::as_str, &mut activity);
-table_key_into_activity(
-    "state",
-    &table,
-    Activity::with_state,
-    |s: &String| -> &str { s.as_str() },  // Explicit return type
-    &mut activity
-);
+    table_key_into_activity("start_time", &table, Activity::with_start_time, &mut activity);
 
     
 
-    match table.get::<&str,String>("state"){
-        Ok(value) => {activity.with_state(value.as_str());},
+    match table.get::<&str, i64>("end_time") {
+        Ok(value) => {
+            activity.with_end_time(value);
+        }
         Err(_) => (),
     };
 
-    match table.get::<&str,String>("details"){
-        Ok(value) => {activity.with_details(value.as_str());},
+    match table.get::<&str, String>("large_image_key") {
+        Ok(value) => {
+            activity.with_large_image_key(value.as_str());
+        }
         Err(_) => (),
     };
 
-    match table.get::<&str,i64>("start_time"){
-        Ok(value) => {activity.with_start_time(value);},
+    match table.get::<&str, String>("large_image_tooltip") {
+        Ok(value) => {
+            activity.with_large_image_tooltip(value.as_str());
+        }
         Err(_) => (),
     };
 
-    match table.get::<&str,i64>("end_time"){
-        Ok(value) => {activity.with_end_time(value);},
+    match table.get::<&str, String>("small_image_key") {
+        Ok(value) => {
+            activity.with_small_image_key(value.as_str());
+        }
         Err(_) => (),
     };
 
-    match table.get::<&str,String>("large_image_key"){
-        Ok(value) => {activity.with_large_image_key(value.as_str());},
+    match table.get::<&str, String>("small_image_tooltip") {
+        Ok(value) => {
+            activity.with_small_image_tooltip(value.as_str());
+        }
         Err(_) => (),
     };
 
-    match table.get::<&str,String>("large_image_tooltip"){
-        Ok(value) => {activity.with_large_image_tooltip(value.as_str());},
+    match table.get::<&str, String>("party_id") {
+        Ok(value) => {
+            activity.with_party_id(value.as_str());
+        }
         Err(_) => (),
     };
 
-    match table.get::<&str,String>("small_image_key"){
-        Ok(value) => {activity.with_small_image_key(value.as_str());},
+    match table.get::<&str, u32>("party_amount") {
+        Ok(value) => {
+            activity.with_party_amount(value);
+        }
         Err(_) => (),
     };
 
-    match table.get::<&str,String>("small_image_tooltip"){
-        Ok(value) => {activity.with_small_image_tooltip(value.as_str());},
+    match table.get::<&str, u32>("party_capacity") {
+        Ok(value) => {
+            activity.with_party_capacity(value);
+        }
         Err(_) => (),
     };
 
-    match table.get::<&str,String>("party_id"){
-        Ok(value) => {activity.with_party_id(value.as_str());},
+    match table.get::<&str, bool>("instance") {
+        Ok(value) => {
+            activity.with_instance(value);
+        }
         Err(_) => (),
     };
 
-    match table.get::<&str,u32>("party_amount"){
-        Ok(value) => {activity.with_party_amount(value);},
+    match table.get::<&str, String>("match_secret") {
+        Ok(value) => {
+            activity.with_match_secret(value.as_str());
+        }
         Err(_) => (),
     };
 
-    match table.get::<&str,u32>("party_capacity"){
-        Ok(value) => {activity.with_party_capacity(value);},
+    match table.get::<&str, String>("join_secret") {
+        Ok(value) => {
+            activity.with_join_secret(value.as_str());
+        }
         Err(_) => (),
     };
 
-    match table.get::<&str,bool>("instance"){
-        Ok(value) => {activity.with_instance(value);},
+    match table.get::<&str, String>("spectate_secret") {
+        Ok(value) => {
+            activity.with_spectate_secret(value.as_str());
+        }
         Err(_) => (),
     };
 
-    match table.get::<&str,String>("match_secret"){
-        Ok(value) => {activity.with_match_secret(value.as_str());},
-        Err(_) => (),
-    };
-
-    match table.get::<&str,String>("join_secret"){
-        Ok(value) => {activity.with_join_secret(value.as_str());},
-        Err(_) => (),
-    };
-
-    match table.get::<&str,String>("spectate_secret"){
-        Ok(value) => {activity.with_spectate_secret(value.as_str());},
-        Err(_) => (),
-    };
-
-    match update_activity(activity){
+    match update_activity(activity) {
         Ok(()) => Ok(0),
         Err(e) => Err(LuaError::external(e)),
     }
-
 }
 
-fn table_key_into_activity<'a,TableType,ActivityFuncType,F,H>(key :&str, table : &'a LuaTable,activity_method :F,table_type_to_activity_func_type :H,activity:&mut Activity)
-where F : Fn(&mut Activity, ActivityFuncType) -> &mut Activity ,
-TableType: mlua::FromLua<'a>,
-H : Fn(&TableType)->ActivityFuncType{
-    let f = table_type_to_activity_func_type;
-
-    match table.get::<&str,TableType>(key){
-        Ok(value) => {activity_method(activity,f(&value));},
+fn table_key_string_into_activity<'a, 'b, F>(
+    key: &str,
+    table: &'a LuaTable,
+    activity_method: F,
+    activity: &'b mut Activity,
+) where
+    F: Fn(&'b mut Activity, &str) -> &'b mut Activity,
+{
+    match table.get::<&str, String>(key) {
+        Ok(value) => {
+            activity_method(activity, value.as_str());
+        }
         Err(_) => (),
     };
-    
+}
+
+fn table_key_into_activity<'a, T, F>(
+    key: &str,
+    table: &'a LuaTable,
+    activity_method: F,
+    activity: &mut Activity,
+) where
+    F: Fn(&mut Activity, T) -> &mut Activity,
+    T: FromLua<'a>,
+{
+    match table.get::<&str, T>(key) {
+        Ok(value) => {
+            activity_method(activity, value);
+        }
+        Err(_) => (),
+    };
 }
