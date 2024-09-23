@@ -36,14 +36,14 @@ else
     error("error could not find so",2)
 end
 
-print("caca\n.\n.")
 discord_integration.start_discord_sdk(CLIENT_ID)
-print("caca\n\n")
-discord_integration.start_discord_sdk(CLIENT_ID)
+discord_integration.send_activity({
+    state = "state"
+})
 
 while true do
-    io.write(".")
-    io.write(string.char(10))
+    -- io.write(".")
+    -- io.write(string.char(10))
 end
 
 
