@@ -1,6 +1,6 @@
 # Readme
 ## Use case:
-I started this lib to implement the discord game sdk on the video game **Bugscraper**. My code is probably crappy, but feel free to use has you want, if you have question about it feel free to mail me at `contact.corentin.vaillant@gmail.com`. </br>
+I started this lib to implement the discord game sdk on the video game **[Bugsraper](https://github.com/Yolwoocle/bugscraper)** . My code is probably crappy, but feel free to use has you want, if you have question about it feel free to mail me at `contact.corentin.vaillant@gmail.com`. </br>
 If you decide to use it for one of your project, please informe me, I like to know if my code is use somewere else ☺️.
 
 ## Doc
