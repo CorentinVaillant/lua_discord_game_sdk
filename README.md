@@ -18,6 +18,7 @@ like that  :
 └───target
     └──release ...
 ```
+On windows place the Lua54.dll at the root of the library project to bind the .dll file with .lua file.
 ## Building
 like before place the discord game sdk in the discord_game_sdk file. Set the `DISCORD_GAME_SDK_PATH` environement variable at the discord_game_sdk path (or whatever else where you place a discord game sdk folder)
 
