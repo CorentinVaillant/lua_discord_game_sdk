@@ -9,3 +9,6 @@ crate-type = ["cdylib"]
 [dependencies]
 discord_game_sdk = "1.0.1"
 mlua = {version = "0.9.9",features = ["luajit", "module"]}
+
+[env]
+DISCORD_GAME_SDK_PATH= "./discord_game_sdk/"

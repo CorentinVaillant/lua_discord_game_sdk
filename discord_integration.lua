@@ -1,7 +1,16 @@
 --print("[lua discord int] start of the execution")
 local CLIENT_ID = 1114962997060849774 --toremove
+local current_os
 
+--detection of the os 
+local path_sep = package.config:sub(1, 1)
+if path_sep == "\\" then
+    current_os = "Windows"
+else
+    current_os = "Unix"
+end
 
+--default function
 local function uninitialize_func()
     print("the discord lib has not be well initialized")
     return nil
@@ -15,23 +24,35 @@ local discord = {
 
 
 if (nil == os.getenv("LD_LIBRARY_PATH")) then
-    print("please set LD_LIBRARY_PATH environment variable")
-    return discord
+    print("LD_LIBRARY_PATH \n\t-> setting it to ./discord_game_sdk/lib/x86_64")
+    if current_os == "Windows" then
+        os.execute("set MY_VARIABLE=./discord_game_sdk/lib/x86_64")
+    else
+        os.execute("export MY_VARIABLE='./discord_game_sdk/lib/x86_64'")
+    end
+    
 end
 
 local discord_integration
-discord_integration = require("target.debug.liblua_discord_game_sdk")
+discord_integration = require("target.debug.lua_discord_game_sdk")  
 if pcall(require,"target.debug.liblua_discord_game_sdk") then
-    print("[lua discord int] debug")
+    print("[lua discord int] Unix debug")
     discord_integration = require("target.debug.liblua_discord_game_sdk")
-
 elseif pcall(require,"target.release.liblua_discord_game_sdk") then
-    print("[lua discord int] release")
+    print("[lua discord int] Unix release")
     discord_integration = require("target.release.liblua_discord_game_sdk")
-
 elseif pcall(require,"liblua_discord_game_sdk") then
-    print("[lua discord int] lib")
+    print("[lua discord int] Unix lib")
     discord_integration = require("liblua_discord_game_sdk")
+elseif pcall(require,"lua_discord_game_sdk") then
+    print("[lua discord int] Windows lib")
+    discord_integration = require("lua_discord_game_sdk")
+elseif pcall(require,"target.release.lua_discord_game_sdk") then
+    print("[lua discord int] Windows release")
+    discord_integration = require("target.release.lua_discord_game_sdk")
+elseif pcall(require,"target.debug.lua_discord_game_sdk") then
+    print("[lua discord int] Windows debug")
+    discord_integration = require("target.debug.lua_discord_game_sdk")
 else
     error("error could not find so",2)
 end
