@@ -38,12 +38,35 @@ end
 
 discord_integration.start_discord_sdk(CLIENT_ID)
 discord_integration.send_activity({
-    state = "state"
+    state = "state",
+    details = "details",
+
+    start_time = 0,
+    end_time = 9223372036854775806,
+
+    large_image_key = "echo",
+    large_image_tooltip = "echo",
+    small_image_key = "miamzelda",
+    small_image_tooltip = "miamzelda",
+
+    party_id = "123456789",
+    party_amount = 1;
+    party_capacity = 20,
+
+    instance = true,
+    match_secret = "match12345",
+    join_secret = "join12345",
+    spectate_secret = "spectate12345"
+
+
 })
 
+print("envoie fait")
+
 while true do
-    -- io.write(".")
-    -- io.write(string.char(10))
+    os.execute("sleep " .. tonumber(1))
+    print("wsh")
+    discord_integration.update_callback()
 end
 
 

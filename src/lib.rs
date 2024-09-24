@@ -66,99 +66,38 @@ fn lua_discord_update_callback(_lua: &Lua, _: ()) -> LuaResult<LuaInteger> {
     }
 }
 
-fn lua_send_activity<'a>(_lua: &Lua, table: LuaTable) -> LuaResult<LuaInteger> {
+fn lua_table_to_activity(table: &LuaTable) -> Activity{
     let mut activity = Activity::empty();
 
     table_key_string_into_activity("state", &table, Activity::with_state, &mut activity);
     table_key_string_into_activity("details", &table, Activity::with_details, &mut activity);
 
     table_key_into_activity("start_time", &table, Activity::with_start_time, &mut activity);
-
+    table_key_into_activity("end_time", &table, Activity::with_end_time, &mut activity);
     
+    table_key_string_into_activity("large_image_key",&table, Activity::with_large_image_key, &mut activity);
+    table_key_string_into_activity("large_image_tooltip",&table, Activity::with_large_image_tooltip, &mut activity);
+    table_key_string_into_activity("small_image_key",&table, Activity::with_small_image_key, &mut activity);
+    table_key_string_into_activity("small_image_tooltip",&table, Activity::with_small_image_tooltip, &mut activity);
 
-    match table.get::<&str, i64>("end_time") {
-        Ok(value) => {
-            activity.with_end_time(value);
-        }
-        Err(_) => (),
-    };
+    table_key_string_into_activity("party_id",&table, Activity::with_party_id, &mut activity);
+    table_key_into_activity("party_amount", &table, Activity::with_party_amount, &mut activity);
+    table_key_into_activity("party_capacity", &table, Activity::with_party_capacity, &mut activity);
 
-    match table.get::<&str, String>("large_image_key") {
-        Ok(value) => {
-            activity.with_large_image_key(value.as_str());
-        }
-        Err(_) => (),
-    };
+    table_key_into_activity("instance", &table, Activity::with_instance, &mut activity);
+    table_key_string_into_activity("match_secret",&table, Activity::with_match_secret, &mut activity);
+    table_key_string_into_activity("join_secret",&table, Activity::with_join_secret, &mut activity);
+    table_key_string_into_activity("spectate_secret",&table, Activity::with_spectate_secret, &mut activity);
 
-    match table.get::<&str, String>("large_image_tooltip") {
-        Ok(value) => {
-            activity.with_large_image_tooltip(value.as_str());
-        }
-        Err(_) => (),
-    };
+    activity
 
-    match table.get::<&str, String>("small_image_key") {
-        Ok(value) => {
-            activity.with_small_image_key(value.as_str());
-        }
-        Err(_) => (),
-    };
 
-    match table.get::<&str, String>("small_image_tooltip") {
-        Ok(value) => {
-            activity.with_small_image_tooltip(value.as_str());
-        }
-        Err(_) => (),
-    };
+}
 
-    match table.get::<&str, String>("party_id") {
-        Ok(value) => {
-            activity.with_party_id(value.as_str());
-        }
-        Err(_) => (),
-    };
+fn lua_send_activity<'a>(_lua: &Lua, table: LuaTable) -> LuaResult<LuaInteger> {
+    
+    let activity = lua_table_to_activity(&table);
 
-    match table.get::<&str, u32>("party_amount") {
-        Ok(value) => {
-            activity.with_party_amount(value);
-        }
-        Err(_) => (),
-    };
-
-    match table.get::<&str, u32>("party_capacity") {
-        Ok(value) => {
-            activity.with_party_capacity(value);
-        }
-        Err(_) => (),
-    };
-
-    match table.get::<&str, bool>("instance") {
-        Ok(value) => {
-            activity.with_instance(value);
-        }
-        Err(_) => (),
-    };
-
-    match table.get::<&str, String>("match_secret") {
-        Ok(value) => {
-            activity.with_match_secret(value.as_str());
-        }
-        Err(_) => (),
-    };
-
-    match table.get::<&str, String>("join_secret") {
-        Ok(value) => {
-            activity.with_join_secret(value.as_str());
-        }
-        Err(_) => (),
-    };
-
-    match table.get::<&str, String>("spectate_secret") {
-        Ok(value) => {
-            activity.with_spectate_secret(value.as_str());
-        }
-        Err(_) => (),
-    };
 
     match update_activity(activity) {
         Ok(()) => Ok(0),
