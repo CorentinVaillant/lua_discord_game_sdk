@@ -1,6 +1,7 @@
 mod discord_int;
 
 use discord_game_sdk::Activity;
+
 use discord_int::*;
 use mlua::prelude::*;
 
@@ -46,7 +47,7 @@ fn lua_init(lua: &Lua) -> LuaResult<LuaTable> {
     )?;
 
     export.set("send_activity", lua.create_function(lua_send_activity)?)?;
-
+ 
     println!("[lib] :export DONE");
     Ok(export)
 }
@@ -147,7 +148,7 @@ fn lua_send_activity<'a>(_lua: &Lua, table: LuaTable) -> LuaResult<LuaInteger> {
 
     match update_activity(activity) {
         Ok(()) => Ok(0),
-        Err(e) => Err(LuaError::external(e)),
+        Err(e) => {eprintln!("{e}");Err(LuaError::external(e))},
     }
 }
 

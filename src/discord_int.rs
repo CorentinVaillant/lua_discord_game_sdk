@@ -56,7 +56,7 @@ pub fn start_discord_sdk(client_id: i64) -> Result<()> {
                 });
             }
             Err(e) => {
-                eprintln!("[rust lib] could not start discord api");
+                eprintln!("[rust lib] could not start discord api : {e}");
                 result_sender.send(Err(e)).unwrap_or_else(|_a| {
                     eprintln!("[rust lib] could not send Err({e})!");
                 });
@@ -113,8 +113,7 @@ fn handle_discord_func<E>(discord: &mut Discord<'_, E>, f: DiscordFunc) -> Resul
 
 //send DiscordFunc::RunCallBack into DISCORD_FUNC_SENDER
 pub fn update_callback() -> std::result::Result<(), String> {
-
-
+//limiter func
     match DISCORD_FUNC_SENDER.get() {
         Some(sender) => match sender.send(DiscordFunc::RunCallBack) {
             Ok(_) => Ok(()),
@@ -125,8 +124,9 @@ pub fn update_callback() -> std::result::Result<(), String> {
 }
 
 pub fn update_activity(activity: Activity) -> std::result::Result<(), String> {
-
 //limiter func
+println!("{:#?}",activity);
+
     match DISCORD_FUNC_SENDER.get() {
         Some(sender) => match sender.send(DiscordFunc::ActivityFunc(activity)) {
             Ok(_) => Ok(()),

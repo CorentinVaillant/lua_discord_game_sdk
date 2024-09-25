@@ -7,7 +7,7 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-discord_game_sdk = "1.0.1"
+discord_game_sdk = {version = "1.0.1", features = []}
 env_logger = "0.11.5"
 mlua = {version = "0.9.9",features = ["luajit", "module"]}
 
