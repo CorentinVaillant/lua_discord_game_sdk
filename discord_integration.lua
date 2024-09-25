@@ -34,7 +34,6 @@ if (nil == os.getenv("LD_LIBRARY_PATH")) then
 end
 
 local discord_integration
-discord_integration = require("target.debug.lua_discord_game_sdk")  
 if pcall(require,"target.debug.liblua_discord_game_sdk") then
     print("[lua discord int] Unix debug")
     discord_integration = require("target.debug.liblua_discord_game_sdk")
@@ -79,15 +78,16 @@ discord_integration.send_activity({
     join_secret = "join12345",
     spectate_secret = "spectate12345"
 
-
 })
-
-print("envoie fait")
-
+local do_it = false
 while true do
-    os.execute("sleep " .. tonumber(1))
-    print("wsh")
-    discord_integration.update_callback()
+
+    if do_it and (os.time() %2 == 0) then
+        do_it = false
+        discord_integration.update_callback()
+    else
+        do_it = true
+    end
 end
 
 
